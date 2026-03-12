@@ -32,7 +32,7 @@
                 <!-- Основная форма -->
                 <form class="report-form" 
                       data-report-type="Тренировка" 
-                      data-webhook="https://discord.com/api/webhooks/1421249459714785431/YnI9wyYHfhXx-e3mHZfalrBsctd-a1x2rDW0bMQyNOaxvwgE4Z7iu9zo1MIP9mhNeA_1" 
+                      data-webhook="https://discord.com/api/webhooks/1475920270492565665/Jvw_ng5hLZqbp9ZPCwDrohTrtDuvHpDYQbq-8VgqEnfCmsUNR8brbpuohb20U9QRwiN8" 
                       action="#" method="post">
                     
                     <!-- Кто проводил тренировку (динамический select) -->
@@ -130,6 +130,13 @@
         document.addEventListener('DOMContentLoaded', function() {
             populateSelect('trainerSelect');
 
+            // Слушаем изменения в localStorage (синхронизация между вкладками)
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'employees') {
+                    populateSelect('trainerSelect');
+                }
+            });
+
             const form = document.querySelector('.report-form');
             if (!form) return;
 
@@ -195,5 +202,4 @@
     </script>
     <script src="report.js"></script>
 </body>
-
 </html>

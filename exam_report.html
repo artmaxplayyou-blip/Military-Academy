@@ -156,9 +156,18 @@
                 const formData = new FormData(form);
                 const report = Object.fromEntries(formData.entries());
 
-                // Обработка чекбоксов экзаменов
-                const exams = formData.getAll('exam[]');
-                report.exams = exams.join(', ');
+                // Обработка чекбоксов экзаменов – преобразуем в русские названия
+                const examValues = formData.getAll('exam[]');
+                const examNamesMap = {
+                    oath: 'Воинская присяга',
+                    drill: 'Строевой устав',
+                    military_id: 'Военный билет',
+                    post_duty: 'Постовая служба',
+                    tencodes: 'Тен-коды',
+                    radio: 'Положение об использовании радиосвязи',
+                    intro: 'Вводный инструктаж'
+                };
+                report.exams = examValues.map(val => examNamesMap[val] || val).join(', ');
 
                 // Извлекаем данные экзаменатора
                 const examiner = report.examiner || '';
@@ -192,7 +201,7 @@
                             { name: 'Кандидат', value: report.candidate, inline: true },
                             { name: 'Экзамены', value: report.exams },
                             { name: 'Результат', value: report.result === 'passed' ? '✅ Сдал' : '❌ Не сдал', inline: true },
-                            { name: 'Доказательство', value: `[Ссылка на видео](${report.proof})`, inline: true }
+                            { name: 'Доказательство', value: `[Ссылка](${report.proof})`, inline: true }
                         ],
                         timestamp: report.timestamp,
                         footer: { text: 'Military Academy' }
@@ -224,4 +233,3 @@
 </body>
 
 </html>
-

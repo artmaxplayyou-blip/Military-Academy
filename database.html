@@ -923,21 +923,19 @@
                 }
             });
 
-            // Первоначальная отрисовка таблицы (данные загрузятся, но контент скрыт до ввода пароля)
+            // Первоначальная отрисовка таблицы
             renderTable();
+
+            // Слушаем изменения localStorage для синхронизации между вкладками
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'employees' || e.key === 'recruitmentReports' || e.key === 'examReports' || e.key === 'trainingReports') {
+                    renderTable();
+                }
+            });
 
             // Убираем фейдер
             document.getElementById('page-fader').classList.add('hide');
         })();
-
-// Слушаем изменения localStorage в других вкладках
-window.addEventListener('storage', function(e) {
-    // Если изменились ключи employees или отчётов, перерисовываем таблицу
-    if (e.key === STORAGE_KEY_EMPLOYEES || e.key === STORAGE_KEYS.recruitment || e.key === STORAGE_KEYS.exam || e.key === STORAGE_KEYS.training) {
-        renderTable();
-    }
-});
     </script>
 </body>
-
 </html>

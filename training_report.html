@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Military Academy — Отчёт о тренировке</title>
+    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="training-page">
+    <div class="hero">
+        <nav>
+            <div class="nav-brand">
+                <i class="fas fa-shield-alt"></i> Military Academy
+            </div>
+            <div class="nav-user">
+                <a href="index.html" class="home-btn"><i class="fas fa-home"></i> Главная</a>
+                <a href="recruitment_report.html" class="report-btn"><i class="fas fa-flag"></i> Наборы</a>
+                <a href="exam_report.html" class="exam-btn"><i class="fas fa-graduation-cap"></i> Экзамены</a>
+                <a href="training_report.html" class="training-btn active"><i class="fas fa-dumbbell"></i> Тренировки</a>
+                <a href="database.html" class="database-btn"><i class="fas fa-database"></i> База данных</a>
+            </div>
+        </nav>
+
+        <div class="training-container">
+            <div class="training-card">
+                <div class="report-header">
+                    <h1><i class="fas fa-dumbbell"></i> Отчёт о тренировке</h1>
+                    <p>Заполните все поля для отправки отчёта в Discord</p>
+                </div>
+
+                <!-- Основная форма -->
+                <form class="report-form" 
+                      data-report-type="Тренировка" 
+                      data-webhook="https://discord.com/api/webhooks/1475920270492565665/Jvw_ng5hLZqbp9ZPCwDrohTrtDuvHpDYQbq-8VgqEnfCmsUNR8brbpuohb20U9QRwiN8" 
+                      action="#" method="post">
+                    
+                    <!-- Кто проводил тренировку (динамический select) -->
+                    <div class="form-group">
+                        <label><i class="fas fa-chalkboard-teacher"></i> Кто проводил тренировку:</label>
+                        <select name="trainer" id="trainerSelect" required>
+                            <option value="" disabled selected>— Выберите сотрудника —</option>
+                        </select>
+                    </div>
+
+                    <!-- Тема тренировки -->
+                    <div class="form-group">
+                        <label><i class="fas fa-tag"></i> Тема тренировки:</label>
+                        <input type="text" name="topic" placeholder="Тактическая подготовка" required>
+                    </div>
+
+                    <!-- Начало (ссылка на фото) -->
+                    <div class="form-group">
+                        <label><i class="fas fa-camera"></i> Начало (ссылка на фото):</label>
+                        <input type="url" name="start_photo" placeholder="https://imgur.com/..." required>
+                    </div>
+
+                    <!-- Конец (ссылка на фото) -->
+                    <div class="form-group">
+                        <label><i class="fas fa-camera"></i> Конец (ссылка на фото):</label>
+                        <input type="url" name="end_photo" placeholder="https://imgur.com/..." required>
+                    </div>
+
+                    <!-- Кнопка отправки -->
+                    <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Отправить отчёт</button>
+                </form>
+
+                <div class="report-footer">
+                    <div class="decor-line"></div>
+                    <div class="badges">
+                        <i class="fas fa-medal"></i>
+                        <i class="fas fa-flag-usa"></i>
+                        <i class="fas fa-helicopter"></i>
+                        <i class="fas fa-tank"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="overlay"></div>
+    </div>
+
+    <script>
+        function loadEmployees() {
+            const defaultEmployees = [
+                { name: "Maksimus Volkov", cid: "CYE5" },
+                { name: "Lina Mur", cid: "BFFI" },
+                { name: "Julian Navarro", cid: "A88L" },
+                { name: "Alexey Burnetto", cid: "AA07" },
+                { name: "Dmitriy Extazy", cid: "46O5" },
+                { name: "Wanessa Bessmertny", cid: "CW6K" },
+                { name: "[D.inst.MA] S.Vertol", cid: "CXES" },
+                { name: "[Inst.MA] Toni Dymov", cid: "COYA" },
+                { name: "[D.Com.MA] Tyler Mauzer", cid: "AYSA" },
+                { name: "[D.com.MA] S.Zeranovich I", cid: "7B6J" },
+                { name: "[Com.MA] Alexei Chernov", cid: "CJE4" }
+            ];
+            const stored = localStorage.getItem('employees');
+            if (stored) {
+                try {
+                    return JSON.parse(stored);
+                } catch (e) {
+                    return defaultEmployees;
+                }
+            } else {
+                localStorage.setItem('employees', JSON.stringify(defaultEmployees));
+                return defaultEmployees;
+            }
+        }
+
+        function populateSelect(selectId) {
+            const employees = loadEmployees();
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            select.innerHTML = '<option value="" disabled selected>— Выберите сотрудника —</option>';
+            employees.forEach(emp => {
+                const option = document.createElement('option');
+                option.value = `${emp.name} | ${emp.cid}`;
+                option.textContent = `${emp.name} | ${emp.cid}`;
+                select.appendChild(option);
+            });
+        }
+
+        function saveReport(type, formData) {
+            const key = type + 'Reports';
+            const reports = JSON.parse(localStorage.getItem(key) || '[]');
+            reports.push(formData);
+            localStorage.setItem(key, JSON.stringify(reports));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            populateSelect('trainerSelect');
+
+            const form = document.querySelector('.report-form');
+            if (!form) return;
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+                const report = Object.fromEntries(formData.entries());
+
+                // Извлекаем данные тренера
+                const trainer = report.trainer || '';
+                const parts = trainer.split('|').map(s => s.trim());
+                if (parts.length >= 2) {
+                    report.reporterName = parts[0];
+                    report.reporterCID = parts[1];
+                } else {
+                    report.reporterName = trainer;
+                    report.reporterCID = '';
+                }
+
+                report.timestamp = new Date().toISOString();
+
+                saveReport('training', report);
+
+                const webhook = form.dataset.webhook;
+
+                if (webhook && webhook.startsWith('https://')) {
+                    // Формируем embed
+                    const embed = {
+                        title: 'Новый отчёт о тренировке',
+                        color: 0xa855f7, // фиолетовый
+                        fields: [
+                            { name: 'Инструктор', value: report.trainer, inline: true },
+                            { name: 'Тема', value: report.topic, inline: true },
+                            { name: 'Начало', value: `[Фото](${report.start_photo})`, inline: true },
+                            { name: 'Конец', value: `[Фото](${report.end_photo})`, inline: true }
+                        ],
+                        timestamp: report.timestamp,
+                        footer: { text: 'Military Academy' }
+                    };
+
+                    fetch(webhook, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ embeds: [embed] })
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Ошибка отправки в Discord');
+                        alert('Отчёт отправлен и сохранён!');
+                        form.reset();
+                    })
+                    .catch(err => {
+                        console.error('Ошибка Discord:', err);
+                        alert('Не удалось отправить в Discord, но отчёт сохранён локально.');
+                        form.reset();
+                    });
+                } else {
+                    alert('Не указан корректный Webhook Discord. Отчёт сохранён локально.');
+                    form.reset();
+                }
+            });
+        });
+    </script>
+    <script src="report.js"></script>
+</body>
+</html>

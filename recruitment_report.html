@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Military Academy — Отчёт о наборе</title>
+    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="recruitment-page">
+    <div class="hero">
+        <nav>
+            <div class="nav-brand">
+                <i class="fas fa-shield-alt"></i> Military Academy
+            </div>
+            <div class="nav-user">
+                <a href="index.html" class="home-btn"><i class="fas fa-home"></i> Главная</a>
+                <a href="recruitment_report.html" class="report-btn active"><i class="fas fa-flag"></i> Наборы</a>
+                <a href="exam_report.html" class="exam-btn"><i class="fas fa-graduation-cap"></i> Экзамены</a>
+                <a href="training_report.html" class="training-btn"><i class="fas fa-dumbbell"></i> Тренировки</a>
+                <a href="database.html" class="database-btn"><i class="fas fa-database"></i> База данных</a>
+            </div>
+        </nav>
+
+        <div class="recruitment-container">
+            <div class="recruitment-card">
+                <div class="report-header">
+                    <h1><i class="fas fa-users"></i> Отчёт о наборе</h1>
+                    <p>Заполните все поля для отправки отчёта в Discord</p>
+                </div>
+
+                <!-- Основная форма -->
+                <form class="report-form" 
+                      data-report-type="Набор" 
+                      data-webhook="https://discord.com/api/webhooks/1475920270492565665/Jvw_ng5hLZqbp9ZPCwDrohTrtDuvHpDYQbq-8VgqEnfCmsUNR8brbpuohb20U9QRwiN8" 
+                      action="#" method="post">
+                    
+                    <!-- Собеседование на -->
+                    <div class="form-group">
+                        <label><i class="fas fa-map-pin"></i> Собеседование на:</label>
+                        <div class="radio-group">
+                            <label class="radio-label"><input type="radio" name="interview_place" value="КПП-1" checked> <span>КПП-1</span></label>
+                            <label class="radio-label"><input type="radio" name="interview_place" value="За Автошколой Лос-Сантоса"> <span>За Автошколой Лос-Сантоса</span></label>
+                            <label class="radio-label"><input type="radio" name="interview_place" value="Заявки через мерию"> <span>Заявки через мерию</span></label>
+                        </div>
+                    </div>
+
+                    <!-- Время собеседования -->
+                    <div class="form-group">
+                        <label><i class="fas fa-clock"></i> Время собеседования:</label>
+                        <input type="text" name="interview_time" placeholder="12:34 01.01.2025" required>
+                    </div>
+
+                    <!-- Главный по собеседованию (динамический select) -->
+                    <div class="form-group">
+                        <label><i class="fas fa-user-tie"></i> Главный по собеседованию:</label>
+                        <select name="lead_interviewer" id="leadInterviewer" required>
+                            <option value="" disabled selected>— Выберите сотрудника —</option>
+                        </select>
+                    </div>
+
+                    <!-- Сотрудники МА на собеседовании -->
+                    <div class="form-group">
+                        <label><i class="fas fa-users"></i> Сотрудники МА на собеседовании:</label>
+                        <textarea name="ma_staff" rows="3" placeholder="Alexei Chernov | CJE4, Sergey Volkov | D5F2" required></textarea>
+                    </div>
+
+                    <!-- Данные новобранцев -->
+                    <div class="form-group">
+                        <label><i class="fas fa-user-plus"></i> Данные новобранцев (Имя, фамилия CID):</label>
+                        <textarea name="recruits" rows="4" placeholder="Maksim Hartford | CQ18&#10;Kirill Klenov | COXM" required></textarea>
+                    </div>
+
+                    <!-- Кнопка отправки -->
+                    <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Отправить отчёт</button>
+                </form>
+
+                <div class="report-footer">
+                    <div class="decor-line"></div>
+                    <div class="badges">
+                        <i class="fas fa-medal"></i>
+                        <i class="fas fa-flag-usa"></i>
+                        <i class="fas fa-helicopter"></i>
+                        <i class="fas fa-tank"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="overlay"></div>
+    </div>
+
+    <script>
+        function loadEmployees() {
+            const defaultEmployees = [
+                { name: "Maksimus Volkov", cid: "CYE5" },
+                { name: "Lina Mur", cid: "BFFI" },
+                { name: "Julian Navarro", cid: "A88L" },
+                { name: "Alexey Burnetto", cid: "AA07" },
+                { name: "Dmitriy Extazy", cid: "46O5" },
+                { name: "Wanessa Bessmertny", cid: "CW6K" },
+                { name: "[D.inst.MA] S.Vertol", cid: "CXES" },
+                { name: "[Inst.MA] Toni Dymov", cid: "COYA" },
+                { name: "[D.Com.MA] Tyler Mauzer", cid: "AYSA" },
+                { name: "[D.com.MA] S.Zeranovich I", cid: "7B6J" },
+                { name: "[Com.MA] Alexei Chernov", cid: "CJE4" }
+            ];
+            const stored = localStorage.getItem('employees');
+            if (stored) {
+                try {
+                    return JSON.parse(stored);
+                } catch (e) {
+                    return defaultEmployees;
+                }
+            } else {
+                localStorage.setItem('employees', JSON.stringify(defaultEmployees));
+                return defaultEmployees;
+            }
+        }
+
+        function populateSelect(selectId) {
+            const employees = loadEmployees();
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            select.innerHTML = '<option value="" disabled selected>— Выберите сотрудника —</option>';
+            employees.forEach(emp => {
+                const option = document.createElement('option');
+                option.value = `${emp.name} | ${emp.cid}`;
+                option.textContent = `${emp.name} | ${emp.cid}`;
+                select.appendChild(option);
+            });
+        }
+
+        function saveReport(type, formData) {
+            const key = type + 'Reports';
+            const reports = JSON.parse(localStorage.getItem(key) || '[]');
+            reports.push(formData);
+            localStorage.setItem(key, JSON.stringify(reports));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            populateSelect('leadInterviewer');
+
+            const form = document.querySelector('.report-form');
+            if (!form) return;
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+                const report = Object.fromEntries(formData.entries());
+
+                // Извлекаем данные главного по собеседованию
+                const leadInterviewer = report.lead_interviewer || '';
+                const parts = leadInterviewer.split('|').map(s => s.trim());
+                if (parts.length >= 2) {
+                    report.reporterName = parts[0];
+                    report.reporterCID = parts[1];
+                } else {
+                    report.reporterName = leadInterviewer;
+                    report.reporterCID = '';
+                }
+
+                report.timestamp = new Date().toISOString();
+
+                saveReport('recruitment', report);
+
+                const webhook = form.dataset.webhook;
+
+                if (webhook && webhook.startsWith('https://')) {
+                    // Формируем embed
+                    const embed = {
+                        title: 'Новый отчёт о наборе',
+                        color: 0x3b82f6, // синий
+                        fields: [
+                            { name: 'Главный по собеседованию', value: report.lead_interviewer, inline: true },
+                            { name: 'Место', value: report.interview_place, inline: true },
+                            { name: 'Время', value: report.interview_time, inline: true },
+                            { name: 'Сотрудники МА', value: report.ma_staff },
+                            { name: 'Новобранцы', value: report.recruits }
+                        ],
+                        timestamp: report.timestamp,
+                        footer: { text: 'Military Academy' }
+                    };
+
+                    fetch(webhook, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ embeds: [embed] })
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Ошибка отправки в Discord');
+                        alert('Отчёт успешно отправлен и сохранён!');
+                        form.reset();
+                    })
+                    .catch(err => {
+                        console.error('Ошибка Discord:', err);
+                        alert('Не удалось отправить в Discord, но отчёт сохранён локально.');
+                        form.reset();
+                    });
+                } else {
+                    alert('Не указан корректный Webhook Discord. Отчёт сохранён локально.');
+                    form.reset();
+                }
+            });
+        });
+    </script>
+    <script src="report.js"></script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Military Academy — Отчёт об экзаменах</title>
+    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="exam-page">
+    <div class="hero">
+        <nav>
+            <div class="nav-brand">
+                <i class="fas fa-shield-alt"></i> Military Academy
+            </div>
+            <div class="nav-user">
+                <a href="index.html" class="home-btn"><i class="fas fa-home"></i> Главная</a>
+                <a href="recruitment_report.html" class="report-btn"><i class="fas fa-flag"></i> Наборы</a>
+                <a href="exam_report.html" class="exam-btn active"><i class="fas fa-graduation-cap"></i> Экзамены</a>
+                <a href="training_report.html" class="training-btn"><i class="fas fa-dumbbell"></i> Тренировки</a>
+                <a href="database.html" class="database-btn"><i class="fas fa-database"></i> База данных</a>
+            </div>
+        </nav>
+
+        <div class="exam-container">
+            <div class="exam-card">
+                <div class="exam-header report-header">
+                    <h1><i class="fas fa-graduation-cap"></i> Отчёт об экзаменах</h1>
+                    <p>Заполните все поля для отправки отчёта в Discord</p>
+                </div>
+
+                <!-- Основная форма -->
+                <form class="report-form" 
+                      data-report-type="Экзамен" 
+                      data-webhook="https://discord.com/api/webhooks/1475920270492565665/Jvw_ng5hLZqbp9ZPCwDrohTrtDuvHpDYQbq-8VgqEnfCmsUNR8brbpuohb20U9QRwiN8" 
+                      action="#" method="post">
+                    
+                    <!-- Экзамен принимал (динамический select) -->
+                    <div class="form-group">
+                        <label><i class="fas fa-user-check"></i> Экзамен принимал:</label>
+                        <select name="examiner" id="examinerSelect" required>
+                            <option value="" disabled selected>— Выберите сотрудника —</option>
+                        </select>
+                    </div>
+
+                    <!-- У кого принимали -->
+                    <div class="form-group">
+                        <label><i class="fas fa-user-graduate"></i> У кого принимали:</label>
+                        <input type="text" name="candidate" placeholder="Mason Hartford | A88L" required>
+                    </div>
+
+                    <!-- Экзамен (чекбоксы) -->
+                    <div class="form-group">
+                        <label><i class="fas fa-clipboard-list"></i> Экзамен:</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label"><input type="checkbox" name="exam[]" value="oath"> <span>Воинская присяга</span></label>
+                            <label class="checkbox-label"><input type="checkbox" name="exam[]" value="drill"> <span>Строевой устав</span></label>
+                            <label class="checkbox-label"><input type="checkbox" name="exam[]" value="military_id"> <span>Военный билет</span></label>
+                            <label class="checkbox-label"><input type="checkbox" name="exam[]" value="post_duty"> <span>Постовая служба</span></label>
+                            <label class="checkbox-label"><input type="checkbox" name="exam[]" value="tencodes"> <span>Тен-коды</span></label>
+                            <label class="checkbox-label"><input type="checkbox" name="exam[]" value="radio"> <span>Положение об использовании радиосвязи</span></label>
+                            <label class="checkbox-label"><input type="checkbox" name="exam[]" value="intro"> <span>Вводный инструктаж</span></label>
+                        </div>
+                    </div>
+
+                    <!-- Сдал/не сдал -->
+                    <div class="form-group">
+                        <label><i class="fas fa-check-circle"></i> Результат:</label>
+                        <div class="radio-group">
+                            <label class="radio-label"><input type="radio" name="result" value="passed" checked> <span>Сдал</span></label>
+                            <label class="radio-label"><input type="radio" name="result" value="failed"> <span>Не сдал</span></label>
+                        </div>
+                    </div>
+
+                    <!-- Док-во (ссылка на видео) -->
+                    <div class="form-group">
+                        <label><i class="fas fa-video"></i> Док-во (ссылка на видео):</label>
+                        <input type="url" name="proof" placeholder="https://youtu.be/..." required>
+                    </div>
+
+                    <!-- Кнопка отправки -->
+                    <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Отправить отчёт</button>
+                </form>
+
+                <div class="exam-footer report-footer">
+                    <div class="decor-line"></div>
+                    <div class="badges">
+                        <i class="fas fa-medal"></i>
+                        <i class="fas fa-flag-usa"></i>
+                        <i class="fas fa-helicopter"></i>
+                        <i class="fas fa-tank"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="overlay"></div>
+    </div>
+
+    <script>
+        function loadEmployees() {
+            const defaultEmployees = [
+                { name: "Maksimus Volkov", cid: "CYE5" },
+                { name: "Lina Mur", cid: "BFFI" },
+                { name: "Julian Navarro", cid: "A88L" },
+                { name: "Alexey Burnetto", cid: "AA07" },
+                { name: "Dmitriy Extazy", cid: "46O5" },
+                { name: "Wanessa Bessmertny", cid: "CW6K" },
+                { name: "[D.inst.MA] S.Vertol", cid: "CXES" },
+                { name: "[Inst.MA] Toni Dymov", cid: "COYA" },
+                { name: "[D.Com.MA] Tyler Mauzer", cid: "AYSA" },
+                { name: "[D.com.MA] S.Zeranovich I", cid: "7B6J" },
+                { name: "[Com.MA] Alexei Chernov", cid: "CJE4" }
+            ];
+            const stored = localStorage.getItem('employees');
+            if (stored) {
+                try {
+                    return JSON.parse(stored);
+                } catch (e) {
+                    return defaultEmployees;
+                }
+            } else {
+                localStorage.setItem('employees', JSON.stringify(defaultEmployees));
+                return defaultEmployees;
+            }
+        }
+
+        function populateSelect(selectId) {
+            const employees = loadEmployees();
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            select.innerHTML = '<option value="" disabled selected>— Выберите сотрудника —</option>';
+            employees.forEach(emp => {
+                const option = document.createElement('option');
+                option.value = `${emp.name} | ${emp.cid}`;
+                option.textContent = `${emp.name} | ${emp.cid}`;
+                select.appendChild(option);
+            });
+        }
+
+        function saveReport(type, formData) {
+            const key = type + 'Reports';
+            const reports = JSON.parse(localStorage.getItem(key) || '[]');
+            reports.push(formData);
+            localStorage.setItem(key, JSON.stringify(reports));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            populateSelect('examinerSelect');
+
+            const form = document.querySelector('.report-form');
+            if (!form) return;
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+                const report = Object.fromEntries(formData.entries());
+
+                // Обработка чекбоксов экзаменов
+                const exams = formData.getAll('exam[]');
+                report.exams = exams.join(', ');
+
+                // Извлекаем данные экзаменатора
+                const examiner = report.examiner || '';
+                const parts = examiner.split('|').map(s => s.trim());
+                if (parts.length >= 2) {
+                    report.reporterName = parts[0];
+                    report.reporterCID = parts[1];
+                } else {
+                    report.reporterName = examiner;
+                    report.reporterCID = '';
+                }
+
+                report.timestamp = new Date().toISOString();
+
+                // Сохраняем отчёт в localStorage
+                saveReport('exam', report);
+
+                // Получаем вебхук из data-атрибута
+                const webhook = form.dataset.webhook;
+
+                if (webhook && webhook.startsWith('https://')) {
+                    // Определяем цвет в зависимости от результата
+                    const color = report.result === 'passed' ? 0x16a34a : 0xef4444; // зелёный или красный
+
+                    // Формируем embed
+                    const embed = {
+                        title: 'Новый отчёт об экзамене',
+                        color: color,
+                        fields: [
+                            { name: 'Экзаменатор', value: report.examiner, inline: true },
+                            { name: 'Кандидат', value: report.candidate, inline: true },
+                            { name: 'Экзамены', value: report.exams },
+                            { name: 'Результат', value: report.result === 'passed' ? '✅ Сдал' : '❌ Не сдал', inline: true },
+                            { name: 'Доказательство', value: `[Ссылка на видео](${report.proof})`, inline: true }
+                        ],
+                        timestamp: report.timestamp,
+                        footer: { text: 'Military Academy' }
+                    };
+
+                    fetch(webhook, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ embeds: [embed] })
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Ошибка отправки в Discord');
+                        alert('Отчёт успешно отправлен и сохранён!');
+                        form.reset();
+                    })
+                    .catch(err => {
+                        console.error('Ошибка Discord:', err);
+                        alert('Не удалось отправить в Discord, но отчёт сохранён локально.');
+                        form.reset();
+                    });
+                } else {
+                    alert('Не указан корректный Webhook Discord. Отчёт сохранён локально.');
+                    form.reset();
+                }
+            });
+        });
+    </script>
+    <script src="report.js"></script>
+</body>
+</html>

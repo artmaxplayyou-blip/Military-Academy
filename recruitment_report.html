@@ -32,7 +32,7 @@
                 <!-- Основная форма -->
                 <form class="report-form" 
                       data-report-type="Набор" 
-                      data-webhook="https://discord.com/api/webhooks/1234618538929688596/xWBGmjcNtRxuslIswpsnOYM4knzIueyMq0jAf78Z_88sGMgMoSykJdxj71h6xB1Cbou3" 
+                      data-webhook="https://discord.com/api/webhooks/1475920270492565665/Jvw_ng5hLZqbp9ZPCwDrohTrtDuvHpDYQbq-8VgqEnfCmsUNR8brbpuohb20U9QRwiN8" 
                       action="#" method="post">
                     
                     <!-- Собеседование на -->
@@ -140,6 +140,13 @@
         document.addEventListener('DOMContentLoaded', function() {
             populateSelect('leadInterviewer');
 
+            // Слушаем изменения в localStorage (синхронизация между вкладками)
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'employees') {
+                    populateSelect('leadInterviewer');
+                }
+            });
+
             const form = document.querySelector('.report-form');
             if (!form) return;
 
@@ -206,5 +213,4 @@
     </script>
     <script src="report.js"></script>
 </body>
-
 </html>

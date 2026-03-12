@@ -32,7 +32,7 @@
                 <!-- Основная форма -->
                 <form class="report-form" 
                       data-report-type="Экзамен" 
-                      data-webhook="https://discord.com/api/webhooks/1257286764008312905/NLAOJaVO5tHhNplM8ROM2xYA_PHgwXp0NkBK24NAeG-C36RTx8To4oJqcwAGBZP4rs8o" 
+                      data-webhook="https://discord.com/api/webhooks/1475920270492565665/Jvw_ng5hLZqbp9ZPCwDrohTrtDuvHpDYQbq-8VgqEnfCmsUNR8brbpuohb20U9QRwiN8" 
                       action="#" method="post">
                     
                     <!-- Экзамен принимал (динамический select) -->
@@ -75,7 +75,7 @@
                     <!-- Док-во (ссылка на видео) -->
                     <div class="form-group">
                         <label><i class="fas fa-video"></i> Док-во (ссылка):</label>
-                        <input type="url" name="proof" placeholder="Ссылка" required>
+                        <input type="url" name="proof" placeholder="https://youtu.be/..." required>
                     </div>
 
                     <!-- Кнопка отправки -->
@@ -146,6 +146,13 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             populateSelect('examinerSelect');
+
+            // Слушаем изменения в localStorage (синхронизация между вкладками)
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'employees') {
+                    populateSelect('examinerSelect');
+                }
+            });
 
             const form = document.querySelector('.report-form');
             if (!form) return;
@@ -231,5 +238,4 @@
     </script>
     <script src="report.js"></script>
 </body>
-
 </html>

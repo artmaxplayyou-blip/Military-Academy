@@ -929,6 +929,15 @@
             // Убираем фейдер
             document.getElementById('page-fader').classList.add('hide');
         })();
+
+// Слушаем изменения localStorage в других вкладках
+window.addEventListener('storage', function(e) {
+    // Если изменились ключи employees или отчётов, перерисовываем таблицу
+    if (e.key === STORAGE_KEY_EMPLOYEES || e.key === STORAGE_KEYS.recruitment || e.key === STORAGE_KEYS.exam || e.key === STORAGE_KEYS.training) {
+        renderTable();
+    }
+});
     </script>
 </body>
+
 </html>
